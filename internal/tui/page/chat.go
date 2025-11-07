@@ -8,6 +8,7 @@ import (
 	"github.com/opencode-ai/opencode/internal/app"
 	"github.com/opencode-ai/opencode/internal/session"
 	"github.com/opencode-ai/opencode/internal/tui/components/chat"
+	"github.com/opencode-ai/opencode/internal/tui/components/sidebar"
 	"github.com/opencode-ai/opencode/internal/tui/layout"
 	"github.com/opencode-ai/opencode/internal/tui/util"
 )
@@ -15,11 +16,12 @@ import (
 var ChatPage PageID = "chat"
 
 type chatPage struct {
-	app      *app.App
-	editor   layout.Container
-	messages layout.Container
-	layout   layout.SplitPaneLayout
-	session  session.Session
+	app           *app.App
+	editor        layout.Container
+	messages      layout.Container
+	layout        layout.SplitPaneLayout
+	session       session.Session
+	useModularSidebar bool
 }
 
 type ChatKeyMap struct {
@@ -88,8 +90,17 @@ func (p *chatPage) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (p *chatPage) setSidebar() tea.Cmd {
+	var sidebarModel tea.Model
+	
+	// Use the new modular sidebar by default
+	if p.useModularSidebar {
+		sidebarModel = sidebar.NewModularSidebar(p.session, p.app.History)
+	} else {
+		sidebarModel = chat.NewSidebarCmp(p.session, p.app.History)
+	}
+	
 	sidebarContainer := layout.NewContainer(
-		chat.NewSidebarCmp(p.session, p.app.History),
+		sidebarModel,
 		layout.WithPadding(1, 1, 1, 1),
 	)
 	return tea.Batch(p.layout.SetRightPanel(sidebarContainer), sidebarContainer.Init())
@@ -148,9 +159,10 @@ func NewChatPage(app *app.App) tea.Model {
 		layout.WithBorder(true, false, false, false),
 	)
 	return &chatPage{
-		app:      app,
-		editor:   editorContainer,
-		messages: messagesContainer,
+		app:               app,
+		editor:            editorContainer,
+		messages:          messagesContainer,
+		useModularSidebar: true, // Enable modular sidebar by default
 		layout: layout.NewSplitPane(
 			layout.WithLeftPanel(messagesContainer),
 			layout.WithBottomPanel(editorContainer),
