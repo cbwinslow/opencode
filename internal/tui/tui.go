@@ -611,7 +611,6 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 			)
 		},
 	})
-	
 	// Add Tools command to access the new tools page
 	model.RegisterCommand(dialog.Command{
 		ID:          "tools",
