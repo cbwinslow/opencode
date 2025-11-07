@@ -16,6 +16,7 @@ import (
 	"github.com/opencode-ai/opencode/internal/tui/components/dialog"
 	"github.com/opencode-ai/opencode/internal/tui/layout"
 	"github.com/opencode-ai/opencode/internal/tui/page"
+	"github.com/opencode-ai/opencode/internal/tui/page/tools"
 	"github.com/opencode-ai/opencode/internal/tui/util"
 )
 
@@ -329,6 +330,9 @@ func (a appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if a.currentPage == page.LogsPage {
 				return a, a.moveToPage(page.ChatPage)
 			}
+			if a.currentPage == page.ToolsPage {
+				return a, a.moveToPage(page.ChatPage)
+			}
 		case key.Matches(msg, returnKey):
 			if a.showQuit {
 				a.showQuit = !a.showQuit
@@ -582,8 +586,9 @@ func New(app *app.App) tea.Model {
 		app:           app,
 		commands:      []dialog.Command{},
 		pages: map[page.PageID]tea.Model{
-			page.ChatPage: page.NewChatPage(app),
-			page.LogsPage: page.NewLogsPage(),
+			page.ChatPage:  page.NewChatPage(app),
+			page.LogsPage:  page.NewLogsPage(),
+			page.ToolsPage: tools.NewToolsPage(),
 		},
 	}
 
@@ -606,5 +611,18 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 			)
 		},
 	})
+	
+	// Add Tools command to access the new tools page
+	model.RegisterCommand(dialog.Command{
+		ID:          "tools",
+		Title:       "🔧 Tools & Utilities",
+		Description: "Access markdown viewer, SSH keys, file browser, and more",
+		Handler: func(cmd dialog.Command) tea.Cmd {
+			return util.CmdHandler(page.PageChangeMsg{
+				ID: page.ToolsPage,
+			})
+		},
+	})
+	
 	return model
 }

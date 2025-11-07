@@ -3,13 +3,13 @@ package tools
 import (
 	"os"
 
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/opencode-ai/opencode/internal/config"
 	"github.com/opencode-ai/opencode/internal/tui/components/filebrowser"
 	"github.com/opencode-ai/opencode/internal/tui/components/markdown"
 	"github.com/opencode-ai/opencode/internal/tui/components/ssh"
-	"github.com/opencode-ai/opencode/internal/tui/layout"
 	"github.com/opencode-ai/opencode/internal/tui/styles"
 )
 
@@ -199,24 +199,24 @@ func (m *ToolsPage) GetSize() (int, int) {
 }
 
 // BindingKeys implements layout.Bindings
-func (m *ToolsPage) BindingKeys() []layout.KeyBinding {
+func (m *ToolsPage) BindingKeys() []key.Binding {
 	if m.currentTool != ToolNone {
-		return []layout.KeyBinding{
-			{
-				Key:  "esc/q",
-				Help: "return to menu",
-			},
+		return []key.Binding{
+			key.NewBinding(
+				key.WithKeys("esc", "q"),
+				key.WithHelp("esc/q", "return to menu"),
+			),
 		}
 	}
 	
-	return []layout.KeyBinding{
-		{
-			Key:  "1-3",
-			Help: "select tool",
-		},
-		{
-			Key:  "q/esc",
-			Help: "return",
-		},
+	return []key.Binding{
+		key.NewBinding(
+			key.WithKeys("1", "2", "3"),
+			key.WithHelp("1-3", "select tool"),
+		),
+		key.NewBinding(
+			key.WithKeys("q", "esc"),
+			key.WithHelp("q/esc", "return"),
+		),
 	}
 }
