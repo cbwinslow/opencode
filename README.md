@@ -10,6 +10,7 @@ OpenCode is a Go-based CLI application that brings AI assistance to your termina
 
 ### 📚 Documentation
 
+- **[SUMMARY](SUMMARY.md)** - Quick answers to all framework questions (Start here!)
 - **[Architecture Guide](ARCHITECTURE.md)** - Detailed framework analysis, modularity, and AI inference system
 - **[RAG Integration](RAG_INTEGRATION.md)** - Comprehensive guide for adding Retrieval-Augmented Generation capabilities
 - **[Quick Reference](QUICK_REFERENCE.md)** - Fast lookup for framework, modularity, and RAG possibilities
