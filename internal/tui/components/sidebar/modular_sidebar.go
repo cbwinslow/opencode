@@ -103,6 +103,40 @@ func (m *ModularSidebar) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := []tea.Cmd{}
 	
 	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		// Handle keyboard shortcuts for toggling sections
+		switch msg.String() {
+		case "ctrl+t s":
+			// Toggle Session section
+			m.ToggleSession()
+			return m, nil
+		case "ctrl+t l":
+			// Toggle LSP section
+			m.ToggleLSP()
+			return m, nil
+		case "ctrl+t m":
+			// Toggle Modified Files section
+			m.ToggleModifiedFiles()
+			return m, nil
+		case "ctrl+t p":
+			// Toggle Progress widget
+			if m.progressWidget != nil {
+				m.progressWidget.ToggleCollapse()
+			}
+			return m, nil
+		case "ctrl+t f":
+			// Toggle Filesystem widget
+			if m.filesWidget != nil {
+				m.filesWidget.ToggleCollapse()
+			}
+			return m, nil
+		case "ctrl+t i":
+			// Toggle System Info widget
+			if m.systemWidget != nil {
+				m.systemWidget.ToggleCollapse()
+			}
+			return m, nil
+		}
 	case pubsub.Event[session.Session]:
 		if msg.Type == pubsub.UpdatedEvent {
 			if m.session.ID == msg.Payload.ID {
@@ -144,26 +178,45 @@ func (m *ModularSidebar) View() string {
 	
 	// Session section
 	if m.showSession {
-		sections = append(sections, m.renderSection("Session", m.sessionContent()))
+		sections = append(sections, m.renderCollapsibleSection("Session", m.sessionContent(), "ctrl+t s"))
+		sections = append(sections, "")
+	} else {
+		sections = append(sections, m.renderCollapsedSection("Session", "ctrl+t s"))
 		sections = append(sections, "")
 	}
 	
 	// LSP section
 	if m.showLSP {
-		sections = append(sections, m.renderSection("LSP Configuration", m.lspContent()))
+		sections = append(sections, m.renderCollapsibleSection("LSP Configuration", m.lspContent(), "ctrl+t l"))
+		sections = append(sections, "")
+	} else {
+		sections = append(sections, m.renderCollapsedSection("LSP Configuration", "ctrl+t l"))
 		sections = append(sections, "")
 	}
 	
 	// Modified Files section
 	if m.showModifiedFiles {
-		sections = append(sections, m.renderSection("Modified Files", m.modifiedFilesContent()))
+		sections = append(sections, m.renderCollapsibleSection("Modified Files", m.modifiedFilesContent(), "ctrl+t m"))
+		sections = append(sections, "")
+	} else {
+		sections = append(sections, m.renderCollapsedSection("Modified Files", "ctrl+t m"))
 		sections = append(sections, "")
 	}
 	
 	// Widget sections
+	widgetShortcuts := map[string]string{
+		"Progress":    "ctrl+t p",
+		"Filesystem":  "ctrl+t f",
+		"System Info": "ctrl+t i",
+	}
+	
 	for _, widget := range m.widgets {
+		shortcut := widgetShortcuts[widget.Title()]
 		if !widget.IsCollapsed() {
-			sections = append(sections, m.renderSection(widget.Title(), widget.View()))
+			sections = append(sections, m.renderCollapsibleSection(widget.Title(), widget.View(), shortcut))
+			sections = append(sections, "")
+		} else {
+			sections = append(sections, m.renderCollapsedSection(widget.Title(), shortcut))
 			sections = append(sections, "")
 		}
 	}
@@ -209,6 +262,52 @@ func (m *ModularSidebar) renderSection(title string, content string) string {
 		lipgloss.Top,
 		titleStyle.Render(title),
 		content,
+	)
+}
+
+func (m *ModularSidebar) renderCollapsibleSection(title string, content string, shortcut string) string {
+	// Add expand/collapse indicator and shortcut
+	indicator := "▼" // Expanded
+	titleWithIndicator := fmt.Sprintf("%s %s", indicator, title)
+	
+	shortcutHint := styles.BaseStyle.
+		Foreground(styles.ForgroundDim).
+		Render(fmt.Sprintf(" (%s)", shortcut))
+	
+	titleStyle := styles.BaseStyle.
+		Foreground(styles.PrimaryColor).
+		Bold(true)
+	
+	titleLine := lipgloss.JoinHorizontal(
+		lipgloss.Left,
+		titleStyle.Render(titleWithIndicator),
+		shortcutHint,
+	)
+	
+	return lipgloss.JoinVertical(
+		lipgloss.Top,
+		titleLine,
+		content,
+	)
+}
+
+func (m *ModularSidebar) renderCollapsedSection(title string, shortcut string) string {
+	// Show collapsed indicator
+	indicator := "▶" // Collapsed
+	titleWithIndicator := fmt.Sprintf("%s %s", indicator, title)
+	
+	shortcutHint := styles.BaseStyle.
+		Foreground(styles.ForgroundDim).
+		Render(fmt.Sprintf(" (%s)", shortcut))
+	
+	titleStyle := styles.BaseStyle.
+		Foreground(styles.ForgroundDim).
+		Bold(true)
+	
+	return lipgloss.JoinHorizontal(
+		lipgloss.Left,
+		titleStyle.Render(titleWithIndicator),
+		shortcutHint,
 	)
 }
 
