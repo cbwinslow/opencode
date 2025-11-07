@@ -8,6 +8,12 @@ A powerful terminal-based AI assistant for developers, providing intelligent cod
 
 OpenCode is a Go-based CLI application that brings AI assistance to your terminal. It provides a TUI (Terminal User Interface) for interacting with various AI models to help with coding tasks, debugging, and more.
 
+### 📚 Documentation
+
+- **[Architecture Guide](ARCHITECTURE.md)** - Detailed framework analysis, modularity, and AI inference system
+- **[RAG Integration](RAG_INTEGRATION.md)** - Comprehensive guide for adding Retrieval-Augmented Generation capabilities
+- **[Quick Reference](QUICK_REFERENCE.md)** - Fast lookup for framework, modularity, and RAG possibilities
+
 ## Features
 
 - **Interactive TUI**: Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) for a smooth terminal experience
