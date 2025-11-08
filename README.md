@@ -27,6 +27,13 @@ OpenCode is a Go-based CLI application that brings AI assistance to your termina
 - **LSP Integration**: Language Server Protocol support for code intelligence
 - **File Change Tracking**: Track and visualize file changes during sessions
 - **External Editor Support**: Open your preferred editor for composing messages
+- **🆕 Tools & Utilities Page**: Access enhanced features including:
+  - **📖 Markdown Viewer**: Beautiful rendering of README and markdown files using Glamour
+  - **🔑 SSH Key Viewer**: View and inspect your SSH keys and configuration
+  - **📂 File Browser**: Interactive file tree navigation with filtering
+  - **⚡ Progress Indicators**: Visual feedback for long-running operations
+  - **📊 Table Components**: Better data visualization with styled tables
+
 
 ## Installation
 
@@ -210,7 +217,7 @@ opencode -c /path/to/project
 | `?`      | Toggle help dialog (when not in editing mode)           |
 | `Ctrl+L` | View logs                                               |
 | `Ctrl+A` | Switch session                                          |
-| `Ctrl+K` | Command dialog                                          |
+| `Ctrl+K` | Command dialog (access tools and utilities)             |
 | `Esc`    | Close current overlay/dialog or return to previous mode |
 
 ### Chat Page Shortcuts
@@ -256,6 +263,17 @@ opencode -c /path/to/project
 | Shortcut           | Action              |
 | ------------------ | ------------------- |
 | `Backspace` or `q` | Return to chat page |
+
+### Tools Page Shortcuts
+
+| Shortcut | Action                  |
+| -------- | ----------------------- |
+| `1-3`    | Select tool from menu   |
+| `↑/↓`    | Navigate/scroll content |
+| `Enter`  | Open/select item        |
+| `r`      | Reload (SSH keys)       |
+| `/`      | Filter (file browser)   |
+| `q/Esc`  | Return to menu or chat  |
 
 ## AI Assistant Tools
 
