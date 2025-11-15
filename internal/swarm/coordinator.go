@@ -336,7 +336,7 @@ func (c *Coordinator) handleTaskWithVoting(task agent.Task, agents []agent.Agent
 	if err == nil && result.Decision {
 		// Execute on the agent with highest confidence
 		bestAgent := agents[0]
-		_ = c.executeTask(bestAgent, task)
+		c.executeTask(bestAgent, task)
 	}
 }
 
